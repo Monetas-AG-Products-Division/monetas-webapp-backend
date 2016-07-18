@@ -41,19 +41,29 @@ router.post('/', function (req, res) {
 */
 
 router.delete('/:id', function (req, res) {
-  
-  Contact.findOne({owner:req.user.id, user: req.params.id}, function (err, doc) {
-    if (err || !doc) {
+  Contact.findOne({owner:req.user.id, user: req.params.id}, function(err, result) {
+    if (err) {
       res.status(400).json({error: err});
       return;
-    }
+    };
 
-    doc.status = 'deleted';
-    doc.save(function() {
-      res.json({result: doc});
+    if (result) {
+      res.status(400).json({error: 'User exists as contact'});
+      return;
+    };
+
+    Contact.findOne({owner:req.user.id, user: req.params.id}, function (err, doc) {
+      if (err || !doc) {
+        res.status(400).json({error: err});
+        return;
+      }
+
+      doc.status = 'deleted';
+      doc.save(function() {
+        res.json({result: doc});
+      });
     });
   });
-
 })
 
 /**
@@ -65,7 +75,7 @@ router.delete('/:id', function (req, res) {
 */
 
 router.get('/', function (req, res) {
-  Transfer.find({owner:req.user.id}, function(err, result) {
+  Contact.find({owner:req.user.id}, function(err, result) {
     if (err) {
       res.status(400).json({error: err});
       return;
@@ -84,7 +94,7 @@ router.get('/', function (req, res) {
 */
 
 router.get('/:id', function (req, res) {
-  Transfer.findOne({owner:req.user.id, user: req.params.id}, function(err, result) {
+  Contact.findOne({owner:req.user.id, user: req.params.id}, function(err, result) {
     if (err) {
       res.status(400).json({error: err});
       return;
