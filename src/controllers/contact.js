@@ -22,13 +22,26 @@ router.post('/', function (req, res) {
     status: 'active'
   };
 
-  Contact.create(newContact, function(err, result) {
+  Contact.findOne({owner:req.user.id, user: req.params.id}, function(err, result) {
     if (err) {
       res.status(400).json({error: err});
       return;
     };
 
-    res.json({ result: result });
+    if (result) {
+      res.status(400).json({error: 'User exists as contact'});
+      return;
+    };
+
+    Contact.create(newContact, function(err, result) {
+      if (err) {
+        res.status(400).json({error: err});
+        return;
+      };
+
+      res.json({ result: result });
+    });
+
   });
 })
 
@@ -41,27 +54,15 @@ router.post('/', function (req, res) {
 */
 
 router.delete('/:id', function (req, res) {
-  Contact.findOne({owner:req.user.id, user: req.params.id}, function(err, result) {
-    if (err) {
+  Contact.findOne({owner:req.user.id, user: req.params.id}, function (err, doc) {
+    if (err || !doc) {
       res.status(400).json({error: err});
       return;
-    };
+    }
 
-    if (result) {
-      res.status(400).json({error: 'User exists as contact'});
-      return;
-    };
-
-    Contact.findOne({owner:req.user.id, user: req.params.id}, function (err, doc) {
-      if (err || !doc) {
-        res.status(400).json({error: err});
-        return;
-      }
-
-      doc.status = 'deleted';
-      doc.save(function() {
-        res.json({result: doc});
-      });
+    doc.status = 'deleted';
+    doc.save(function() {
+      res.json({result: doc});
     });
   });
 })
