@@ -22,7 +22,7 @@ router.post('/', function (req, res) {
     status: 'active'
   };
 
-  Contact.findOne({owner:req.user.id, user: req.params.id}, function(err, result) {
+  Contact.findOne({owner:req.user.id, user: newContact.user}, function(err, result) {
     if (err) {
       res.status(400).json({error: err});
       return;
