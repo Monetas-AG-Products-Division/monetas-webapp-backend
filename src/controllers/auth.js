@@ -27,21 +27,27 @@ router.post('/signup', function (req, res) {
     password: req.body.password
   };
 
-  // save user to database
-  User.create(newUser, function(err, result) {
-    if (err) {
-      res.status(400).json({error: err});
+  // try to create a goatD wallet
+  createNewWallet(function(err, wallet) {
+    if (err || !wallet) {
+      res.status(400).json({error: 'A wallet couldn\'t be created'});
       return;
     };
 
-    // The profile is sending inside the token
-    var token = jwt.sign({username: req.body.username, id: result._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+    newUser.wallet = wallet;
 
-    createNewWallet(function(err, result) {
-      console.log(err, result);
+    // save user to database
+    User.create(newUser, function(err, result) {
+      if (err) {
+        res.status(400).json({error: err});
+        return;
+      };
+
+      // The profile is sending inside the token
+      var token = jwt.sign({username: req.body.username, id: result._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+
       res.json({ token: token });
     });
-
 
   });
 
