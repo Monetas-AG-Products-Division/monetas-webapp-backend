@@ -12,7 +12,10 @@ var config = {
       phrase: secret,
       expiresIn: secretExpiresInSeconds
     },
-    goatDServer: '127.0.0.1'
+    goatD: {
+      server: '127.0.0.1',
+      version: 'v3.0'
+    }
   },
   staging: {
     db: process.env.MONGODB || 'dbuser:monetaspassword@ds019634.mlab.com:19634/monetas-staging',
@@ -22,7 +25,10 @@ var config = {
       phrase: secret,
       expiresIn: secretExpiresInSeconds
     },
-    goatDServer: '127.0.0.1'
+    goatD: {
+      server: '127.0.0.1',
+      version: 'v3.0'
+    }
   },
   production: {
     db: process.env.MONGODB || 'localhost:27017/monetas',
@@ -32,7 +38,10 @@ var config = {
       phrase: secret,
       expiresIn: secretExpiresInSeconds
     },
-    goatDServer: '127.0.0.1'
+    goatD: {
+      server: '127.0.0.1',
+      version: 'v3.0'
+    }
   },
 };
 
