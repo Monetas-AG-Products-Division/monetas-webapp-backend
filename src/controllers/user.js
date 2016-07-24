@@ -45,7 +45,7 @@ router.put('/', function (req, res) {
 
 router.get('/balance', function (req, res) {
   // here should be the request to GoatD instance to get real value
-  var rcall = config.goatD.server + ':' + req.user.wallet.port + '/' + config.goatD.version + '/balance';
+  var rcall = 'http://' + config.goatD.server + ':' + req.user.wallet.port + '/' + config.goatD.version + '/balance';
   request(rcall, function (err, response, body) {
     console.log(rcall, err, response, body);
     if (err || response.statusCode !== 200) {
