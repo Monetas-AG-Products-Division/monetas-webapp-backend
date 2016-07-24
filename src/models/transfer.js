@@ -5,6 +5,7 @@ var Schema = mongoose.Schema;
 // Define our transfer schema
 var Transfer = new Schema({
   amount: {type: Number, required: true},
+  message: String,
   recipient: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   currency: {type: String, required: true },

@@ -18,6 +18,7 @@ module.exports = function route(app) {
 router.post('/', function (req, res) {
   var newTransfer = {
     amount: req.body.amount, 
+    message: req.body.message || '',
     recipient: req.body.recipient,
     sender: req.user.id,
     currency: req.body.currency,
