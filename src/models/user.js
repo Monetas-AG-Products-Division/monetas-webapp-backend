@@ -1,6 +1,6 @@
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
-  bcrypt = require('bcrypt'),
+  bcrypt = require('bcrypt-nodejs'),
   SALT_WORK_FACTOR = 10,
   // max of 5 attempts, resulting in a 2 hour lock
   MAX_LOGIN_ATTEMPTS = 5,
