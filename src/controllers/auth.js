@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var path = require('path');
 var childProcess = require('child_process');
-
+var request = require('request');
 
 module.exports = function route(app) {
   app.use('/auth', router);
@@ -36,21 +36,29 @@ router.post('/signup', function (req, res) {
 
     newUser.wallet = wallet;
 
-    // save user to database
-    User.create(newUser, function(err, result) {
-      if (err) {
+    // get nym-id and save it into db record
+    var rcall = 'http://' + config.goatD.server + ':' + req.user.wallet.port + '/' + config.goatD.version + '/nym-id';
+    request(rcall, function (err, response, body) {
+      if (err || response.statusCode !== 200) {
         res.status(400).json({error: err});
         return;
-      };
+      }
+      newUser.wallet.nym-id = body;
 
-      // The profile is sending inside the token
-      var token = jwt.sign({username: req.body.username, id: result._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+      // save user to database
+      User.create(newUser, function(err, result) {
+        if (err) {
+          res.status(400).json({error: err});
+          return;
+        };
 
-      res.json({ token: token });
+        // The profile is sending inside the token
+        var token = jwt.sign({username: req.body.username, id: result._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+
+        res.json({ token: token });
+      });
     });
-
   });
-
 })
 
 /**

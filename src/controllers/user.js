@@ -55,5 +55,5 @@ router.get('/balance', function (req, res) {
     var answer = JSON.parse(body);
 
     res.json({result: answer});
-  })  
+  });  
 })
