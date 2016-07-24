@@ -37,8 +37,7 @@ router.post('/signup', function (req, res) {
     // The profile is sending inside the token
     var token = jwt.sign({username: req.body.username, id: result._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
 
-    var params = [];
-    createNewWallet(params, function(err, result) {
+    createNewWallet(function(err, result) {
       console.log(err, result);
       res.json({ token: token });
     });
@@ -91,10 +90,8 @@ router.post('/login', function (req, res) {
   });
 })
 
-function createNewWallet(params, cb) {
-  var childArgs = [ 'newwallet' ].concat(params);
-
-  childProcess.execFile('', childArgs, function(err, stdout, stderr) {
+function createNewWallet(cb) {
+  childProcess.execFile('newwallet', '', function(err, stdout, stderr) {
     //console.log(err, stdout, stderr);
     cb(err, stdout.replace(/(\r\n|\n|\r)/gm,''));
   });
