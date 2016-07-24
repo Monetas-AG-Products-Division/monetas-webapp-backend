@@ -11,7 +11,8 @@ var config = {
     secret: {
       phrase: secret,
       expiresIn: secretExpiresInSeconds
-    }
+    },
+    goatDServer: '127.0.0.1'
   },
   staging: {
     db: process.env.MONGODB || 'dbuser:monetaspassword@ds019634.mlab.com:19634/monetas-staging',
@@ -20,7 +21,8 @@ var config = {
     secret: {
       phrase: secret,
       expiresIn: secretExpiresInSeconds
-    }
+    },
+    goatDServer: '127.0.0.1'
   },
   production: {
     db: process.env.MONGODB || 'localhost:27017/monetas',
@@ -29,7 +31,8 @@ var config = {
     secret: {
       phrase: secret,
       expiresIn: secretExpiresInSeconds
-    }
+    },
+    goatDServer: '127.0.0.1'
   },
 };
 

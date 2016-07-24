@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var request = require('request');
+var config = require('config/config');
 
 module.exports = function route(app) {
   app.use('/api/users', router);
@@ -43,5 +45,9 @@ router.put('/', function (req, res) {
 
 router.get('/balance', function (req, res) {
   // here should be the request to GoatD instance to get real value
-  res.json({result: {amount: 2400, currency: 'USD'}});
+  request(config.goatDServer, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      res.json({result: body});
+    };
+  })  
 })
