@@ -43,7 +43,7 @@ router.post('/signup', function (req, res) {
         res.status(400).json({error: err});
         return;
       }
-      newUser.wallet.nym_id = body.replace(/\"/g,'');
+      newUser.wallet.nym_id = body.trim().replace(/\"/g,'');
 
       // save user to database
       User.create(newUser, function(err, result) {
