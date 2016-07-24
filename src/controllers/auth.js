@@ -37,7 +37,7 @@ router.post('/signup', function (req, res) {
     newUser.wallet = wallet;
 
     // get nym-id and save it into db record
-    var rcall = 'http://' + config.goatD.server + ':' + req.user.wallet.port + '/' + config.goatD.version + '/nym-id';
+    var rcall = 'http://' + config.goatD.server + ':' + wallet.port + '/' + config.goatD.version + '/nym-id';
     request(rcall, function (err, response, body) {
       if (err || response.statusCode !== 200) {
         res.status(400).json({error: err});
