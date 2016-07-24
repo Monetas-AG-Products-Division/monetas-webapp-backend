@@ -4,6 +4,9 @@ var router = express.Router();
 var jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var path = require('path');
+var childProcess = require('child_process');
+
 
 module.exports = function route(app) {
   app.use('/auth', router);
@@ -34,7 +37,12 @@ router.post('/signup', function (req, res) {
     // The profile is sending inside the token
     var token = jwt.sign({username: req.body.username, id: result._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
 
-    res.json({ token: token });
+    var params = [];
+    createNewWallet(params, function(err, result) {
+      console.log(err, result);
+      res.json({ token: token });
+    });
+
 
   });
 
@@ -82,3 +90,13 @@ router.post('/login', function (req, res) {
 
   });
 })
+
+function createNewWallet(params, cb) {
+  var childArgs = [ 'newwallet' ].concat(params);
+
+  childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
+    //console.log(err, stdout, stderr);
+    cb(err, stdout.replace(/(\r\n|\n|\r)/gm,''));
+  });
+};
+
