@@ -94,7 +94,7 @@ router.post('/login', function (req, res) {
 function createNewWallet(params, cb) {
   var childArgs = [ 'newwallet' ].concat(params);
 
-  childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
+  childProcess.execFile('', childArgs, function(err, stdout, stderr) {
     //console.log(err, stdout, stderr);
     cb(err, stdout.replace(/(\r\n|\n|\r)/gm,''));
   });
