@@ -43,7 +43,7 @@ router.post('/signup', function (req, res) {
         res.status(400).json({error: err});
         return;
       }
-      newUser.wallet.nym-id = body;
+      newUser.wallet.nym_id = body;
 
       // save user to database
       User.create(newUser, function(err, result) {
