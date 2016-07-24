@@ -93,7 +93,7 @@ router.post('/login', function (req, res) {
 function createNewWallet(cb) {
   childProcess.execFile('newwallet', [''], function(err, stdout, stderr) {
     //console.log(err, stdout, stderr);
-    cb(err, stdout.replace(/(\r\n|\n|\r)/gm,''));
+    cb(err, stdout);//.replace(/(\r\n|\n|\r)/gm,''));
   });
 };
 
