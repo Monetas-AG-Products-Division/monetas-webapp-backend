@@ -42,7 +42,14 @@ router.put('/', function (req, res) {
 */
 
 router.get('/profile', function (req, res) {
-  res.json({result: {info: req.user.info, wallet: req.user.wallet} });
+  User.findOne({_id:req.user.id}, function (err, doc) {
+    if (err || !doc) {
+      res.status(400).json({error: err});
+      return;
+    }
+
+    res.json({result: {info: doc.info, wallet: doc.wallet} });
+  });
 })
 
 /**
