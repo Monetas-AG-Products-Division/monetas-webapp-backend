@@ -6,7 +6,6 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var path = require('path');
 var childProcess = require('child_process');
-var request = require('request');
 
 module.exports = function route(app) {
   app.use('/auth', router);
@@ -37,8 +36,8 @@ router.post('/signup', function (req, res) {
     newUser.wallet = wallet;
 
     // get nym-id and save it into db record
-    var rcall = 'http://' + config.goatD.server + ':' + wallet.port + '/' + config.goatD.version + '/nym-id';
-    request(rcall, function (err, response, body) {
+    var GoatD = new (require('utils/goatd'))(wallet);
+    GoatD.call('nym-id', function (err, response, body) {
       if (err || response.statusCode !== 200) {
         res.status(400).json({error: err});
         return;
