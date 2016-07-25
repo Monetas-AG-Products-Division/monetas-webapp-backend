@@ -62,7 +62,7 @@ router.get('/profile', function (req, res) {
 
 router.get('/balance', function (req, res) {
   var GoatD = new (require('utils/goatd'))(req.user.wallet);
-  GoatD.call('nym-id', function (err, response, body) {
+  GoatD.call({action: 'balance'}, function (err, response, body) {
     if (err || response.statusCode !== 200) {
       res.status(400).json({error: err});
       return;

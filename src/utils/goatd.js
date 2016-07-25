@@ -14,8 +14,15 @@ module.exports = class S3Utils {
     this.uri = 'http://' + config.goatD.server + ':' + wallet.port + '/' + config.goatD.version + '/';
   }
 
-  call(method, cb) {
-    request(this.uri + method, function (err, response, body) {
+  call(params, cb) {
+    var options = {
+      url: this.uri + params.action,
+      method: params.method || 'GET'
+    };
+
+    if (params.body) options.json = params.body;
+
+    request(options, function (err, response, body) {
       cb(err, response, body);
     })
   }
