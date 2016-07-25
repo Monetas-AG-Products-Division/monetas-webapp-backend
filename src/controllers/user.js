@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
-var request = require('request');
 var config = require('config/config');
 
 module.exports = function route(app) {
@@ -34,6 +33,17 @@ router.put('/', function (req, res) {
 
 })
 
+/**
+  @api {get} /api/users/profile 
+  @apiName GetUserProfile
+  @apiGroup Profile *
+  @apiParam {String}
+  @apiSuccess {Object} profile.
+*/
+
+router.get('/profile', function (req, res) {
+  res.json({result: {info: req.user.info, wallet: req.user.wallet} });
+})
 
 /**
   @api {get} /api/users/balance 
@@ -44,9 +54,8 @@ router.put('/', function (req, res) {
 */
 
 router.get('/balance', function (req, res) {
-  // here should be the request to GoatD instance to get real value
-  var rcall = 'http://' + config.goatD.server + ':' + req.user.wallet.port + '/' + config.goatD.version + '/balance';
-  request(rcall, function (err, response, body) {
+  var GoatD = new (require('utils/goatd'))(req.user.wallet);
+  GoatD.call('nym-id', function (err, response, body) {
     if (err || response.statusCode !== 200) {
       res.status(400).json({error: err});
       return;
