@@ -53,6 +53,7 @@ router.post('/signup', function (req, res) {
         };
 
         var units = JSON.parse(body);
+        console.log(units);
         newUser.units = [];
         for (var id in units) {
           newUser.units.push({
