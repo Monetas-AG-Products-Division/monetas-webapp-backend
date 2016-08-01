@@ -123,7 +123,7 @@ router.post('/login', function (req, res) {
 })
 
 function createNewWallet(cb) {
-  childProcess.execFile('newwallet', [''], function(err, stdout, stderr) {
+  childProcess.execFile('sudo newwallet', [''], function(err, stdout, stderr) {
     //console.log(err, stdout, stderr);
     var wallet = null;
     if (!err) {
