@@ -41,20 +41,39 @@ router.post('/signup', function (req, res) {
       if (err || response.statusCode !== 200) {
         res.status(400).json({error: err});
         return;
-      }
+      };
+      
       newUser.wallet.nym_id = body.trim().replace(/\"/g,'');
 
-      // save user to database
-      User.create(newUser, function(err, result) {
-        if (err) {
+      // get allowed units for user's wallet
+      GoatD.call({action: 'units'}, function (err, response, body) {
+        if (err || response.statusCode !== 200) {
           res.status(400).json({error: err});
           return;
         };
 
-        // The profile is sending inside the token
-        var token = jwt.sign({username: req.body.username, id: result._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+        var units = JSON.parse(body);
+        newUser.units = [];
+        for (var id in units) {
+          newUser.units.push({
+            code: units[key].code,
+            id: id,
+            name: units[key].name
+          })
+        };
 
-        res.json({ token: token });
+        // save user to database
+        User.create(newUser, function(err, result) {
+          if (err) {
+            res.status(400).json({error: err});
+            return;
+          };
+
+          // The profile is sending inside the token
+          var token = jwt.sign({username: req.body.username, id: result._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+
+          res.json({ token: token });
+        });
       });
     });
   });

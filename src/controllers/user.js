@@ -66,7 +66,7 @@ router.get('/balance', function (req, res) {
     if (err || response.statusCode !== 200) {
       res.status(400).json({error: err});
       return;
-    }
+    };
 
     var answer = JSON.parse(body);
 

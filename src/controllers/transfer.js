@@ -25,6 +25,27 @@ router.post('/', function (req, res) {
     status: 'completed'
   };
 
+  var stransfer = {};
+  stransfer[req.user.wallet.nym_id] = req.body.recipient;
+
+  var GoatD = new (require('utils/goatd'))(req.user.wallet);
+  GoatD.call({action: 'balance', method: 'POST', body: stransfer}, function (err, response, body) {
+
+    // successful transaction 
+    if (response.statusCode === 302) {
+      
+    }
+    if (body) body = JSON.parse(body);
+
+    if (!body) {
+      res.status(400).json({error: err});
+      return;
+    };
+
+
+    var answer = JSON.parse(body);
+  });
+
   Transfer.create(newTransfer, function(err, result) {
     if (err) {
       res.status(400).json({error: err});

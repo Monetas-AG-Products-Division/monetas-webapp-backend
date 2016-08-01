@@ -12,6 +12,7 @@ var UserSchema = new Schema({
   loginAttempts: { type: Number, required: true, default: 0 },
   lockUntil: { type: Number },
   wallet: Schema.Types.Mixed,
+  units: [Schema.Types.Mixed],
   info: Schema.Types.Mixed,
   createdAt: { type: Date },
   updatedAt: { type: Date }

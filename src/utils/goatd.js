@@ -8,7 +8,7 @@ var config = require('config/config');
   var GoatD = new (require('utils/goatd'));
 */
 
-module.exports = class S3Utils {
+module.exports = class GoatD {
 
   constructor(wallet) {
     this.uri = 'http://' + config.goatD.server + ':' + wallet.port + '/' + config.goatD.version + '/';
