@@ -53,13 +53,12 @@ router.post('/signup', function (req, res) {
         };
 
         var units = JSON.parse(body);
-        console.log(units);
         newUser.units = [];
         for (var id in units) {
           newUser.units.push({
-            code: units[key].code,
+            code: units[id].code,
             id: id,
-            name: units[key].name
+            name: units[id].name
           })
         };
 
