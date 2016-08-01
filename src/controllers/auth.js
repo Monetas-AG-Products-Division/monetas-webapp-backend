@@ -23,7 +23,8 @@ router.post('/signup', function (req, res) {
   // create a user a new user
   var newUser ={
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    info: req.body.info
   };
 
   // try to create a goatD wallet
@@ -70,7 +71,7 @@ router.post('/signup', function (req, res) {
           };
 
           // The profile is sending inside the token
-          var token = jwt.sign({username: req.body.username, id: result._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+          var token = jwt.sign({username: req.body.username, id: result._id, wallet: result.wallet, units: result.units}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
 
           res.json({ token: token });
         });
@@ -115,7 +116,7 @@ router.post('/login', function (req, res) {
     };
 
     // The profile is sending inside the token
-    var token = jwt.sign({username: req.body.username, id: user._id, info: user.info, wallet: user.wallet}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+    var token = jwt.sign({username: req.body.username, id: user._id, info: user.info, wallet: user.wallet, units: user.units}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
 
     res.json({ token: token });
 

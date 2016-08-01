@@ -27,7 +27,8 @@ router.put('/', function (req, res) {
     // should be changed for future logic
     doc.info = req.body.info || doc.info;
     doc.save(function() {
-      res.json({result: doc});
+      var token = jwt.sign({username: doc.username, id: doc._id, wallet: doc.wallet, units: doc.units}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+      res.json({ token: token });
     });
   });
 
