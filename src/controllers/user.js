@@ -28,8 +28,8 @@ router.put('/', function (req, res) {
     // should be changed for future logic
     doc.info = req.body.info || doc.info;
     doc.save(function() {
-      var token = jwt.sign({username: doc.username, id: doc._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
-      res.json({ token: token, profile: {info: doc.info, wallet: doc.wallet, units: doc.units} });
+      var token = jwt.sign({username: doc.username, id: doc._id, wallet: doc.wallet}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+      res.json({ token: token, profile: {info: doc.info, nym_id: doc.wallet.nym_id, units: doc.units} });
     });
   });
 
