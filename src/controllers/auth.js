@@ -71,6 +71,7 @@ router.post('/signup', function (req, res) {
           };
 
           // The profile is sending inside the token
+          console.log(result);
           var token = jwt.sign({username: req.body.username, id: result._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
           res.json({ token: token, profile: {wallet: result.wallet, units: result.units} });
         });
