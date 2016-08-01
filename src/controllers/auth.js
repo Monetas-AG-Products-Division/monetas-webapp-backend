@@ -71,9 +71,8 @@ router.post('/signup', function (req, res) {
           };
 
           // The profile is sending inside the token
-          var token = jwt.sign({username: req.body.username, id: result._id, wallet: result.wallet, units: result.units}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
-
-          res.json({ token: token });
+          var token = jwt.sign({username: req.body.username, id: result._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+          res.json({ token: token, profile: {wallet: result.wallet, units: result.units} });
         });
       });
     });
@@ -116,16 +115,13 @@ router.post('/login', function (req, res) {
     };
 
     // The profile is sending inside the token
-    var token = jwt.sign({username: req.body.username, id: user._id, info: user.info, wallet: user.wallet, units: user.units}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
-
-    res.json({ token: token });
-
+    var token = jwt.sign({username: req.body.username, id: user._id}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+    res.json({ token: token, profile: {info: user.info, wallet: user.wallet, units: user.units} });
   });
 })
 
 function createNewWallet(cb) {
   childProcess.execFile('newwallet', [''], function(err, stdout, stderr) {
-    console.log(err, stdout, stderr);
     var wallet = null;
     if (!err) {
       wallet = {
