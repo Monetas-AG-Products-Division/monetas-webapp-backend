@@ -119,7 +119,13 @@ router.get('/:id', function (req, res) {
       res.status(400).json({error: err});
       return;
     };
-
+    result.sender.units.forEach(function(unit) {
+      if (unit.id == result.unit) {
+        result.unitName = unit.name;
+      }
+    });
+    delete result.sender.units;
+    
     res.json({result: result});
-  }).populate('recipient', 'info.name wallet.nym_id').populate({path: 'sender', select: 'info.name wallet.nym_id'});
+  }).lean().populate('recipient', 'info.name wallet.nym_id').populate({path: 'sender', select: 'info.name wallet.nym_id units'});
 })
