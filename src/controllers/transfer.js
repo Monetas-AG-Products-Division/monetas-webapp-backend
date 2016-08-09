@@ -21,12 +21,13 @@ router.post('/', function (req, res) {
     fee: req.body.fee,
     message: req.body.message || '',
     //recipient: req.body.recipient,
-    sender: req.user._id,
+    sender: req.user.id,
     unit: req.body.unit,
     status: 'pending'
   };
 
   console.log(newTransfer);
+  console.log(req.user);
 
   var stransfer = {};
   stransfer[req.user.wallet.nym_id] = req.body.recipient;
