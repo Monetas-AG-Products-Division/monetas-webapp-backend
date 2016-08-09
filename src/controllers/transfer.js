@@ -82,7 +82,7 @@ router.delete('/:id', function (req, res) {
     doc.save(function() {
       res.json({result: doc});
     });
-  });
+  }).populate({path: 'sender', select: 'info.name wallet.nym_id'});
 
 })
 
