@@ -26,9 +26,12 @@ router.post('/', function (req, res) {
     status: 'pending'
   };
 
+  console.log(newTransfer);
+
   var stransfer = {};
   stransfer[req.user.wallet.nym_id] = req.body.recipient;
 
+  /*
   var GoatD = new (require('utils/goatd'))(req.user.wallet);
   GoatD.call({action: 'balance', method: 'POST', body: stransfer}, function (err, response, body) {
 
@@ -46,14 +49,15 @@ router.post('/', function (req, res) {
 
     var answer = JSON.parse(body);
   });
-
+  */
+  
   Transfer.create(newTransfer, function(err, result) {
     if (err) {
       res.status(400).json({error: err});
       return;
     };
 
-    res.json({ result: result });
+    res.json(result);
   });
 })
 
