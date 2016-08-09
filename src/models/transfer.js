@@ -8,7 +8,7 @@ var Transfer = new Schema({
   message: String,
   recipient: { type: Schema.Types.ObjectId, ref: 'User'},
   sender: { type: Schema.Types.ObjectId, ref: 'User'},
-  currency: {type: String, required: true },
+  unit: {type: String, required: true },
   status: String,
   createdAt: { type: Date },
   updatedAt: { type: Date }
