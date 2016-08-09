@@ -125,7 +125,7 @@ router.get('/:id', function (req, res) {
       }
     });
     delete result.sender.units;
-    
+
     res.json({result: result});
   }).lean().populate('recipient', 'info.name wallet.nym_id').populate({path: 'sender', select: 'info.name wallet.nym_id units'});
 })

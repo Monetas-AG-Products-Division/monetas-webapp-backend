@@ -83,7 +83,7 @@ router.get('/', function (req, res) {
     };
 
     res.json({result: result});
-  });
+  }).lean().populate({path:'user', select: 'info.name wallet.nym_id'});
 })
 
 /**
@@ -102,5 +102,5 @@ router.get('/:id', function (req, res) {
     };
 
     res.json({result: result});
-  });
+  }).lean().populate({path:'user', select: 'info.name wallet.nym_id'});
 })
