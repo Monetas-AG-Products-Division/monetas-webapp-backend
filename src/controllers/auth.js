@@ -60,7 +60,7 @@ router.post('/signup', function (req, res) {
             code: units[id].code,
             id: id,
             name: units[id].name
-          })
+          });
         };
 
         // save user to database
@@ -72,7 +72,7 @@ router.post('/signup', function (req, res) {
 
           // The profile is sending inside the token
           var token = jwt.sign({username: req.body.username, id: result._id, wallet: result.wallet}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
-          res.json({ token: token, profile: {nym_id: result.wallet.nym_id, units: result.units} });
+          res.json({ token: token, profile: {nym_id: result.wallet.nym_id, units: result.units, _id: result._id} });
         });
       });
     });
@@ -116,7 +116,7 @@ router.post('/login', function (req, res) {
 
     // The profile is sending inside the token
     var token = jwt.sign({username: req.body.username, id: user._id, wallet: user.wallet}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
-    res.json({ token: token, profile: {info: user.info, nym_id: user.wallet.nym_id, units: user.units} });
+    res.json({ token: token, profile: {info: user.info, nym_id: user.wallet.nym_id, units: user.units, _id: user._id} });
   });
 })
 

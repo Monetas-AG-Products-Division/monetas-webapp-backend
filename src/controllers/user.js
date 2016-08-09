@@ -29,7 +29,7 @@ router.put('/', function (req, res) {
     doc.info = req.body.info || doc.info;
     doc.save(function() {
       var token = jwt.sign({username: doc.username, id: doc._id, wallet: doc.wallet}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
-      res.json({ token: token, profile: {info: doc.info, nym_id: doc.wallet.nym_id, units: doc.units} });
+      res.json({ token: token, profile: {info: doc.info, nym_id: doc.wallet.nym_id, units: doc.units, _id: doc._id} });
     });
   });
 
