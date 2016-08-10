@@ -102,7 +102,7 @@ router.get('/', function (req, res) {
     };
 
     res.json({result: result});
-  }).populate('recipient', 'info.name');
+  }).lean().populate('recipient', 'info.name wallet.nym_id').populate({path: 'sender', select: 'info.name wallet.nym_id units'});
 })
 
 /**
