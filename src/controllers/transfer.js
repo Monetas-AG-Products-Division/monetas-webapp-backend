@@ -108,7 +108,7 @@ router.get('/', function (req, res) {
         result[key].type = 'income';
       };
 
-      if (item.recipient._id == req.user.id) {
+      if (item.recipient && item.recipient._id == req.user.id) {
         result[key].type = 'outcome';
       };
 
