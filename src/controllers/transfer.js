@@ -114,8 +114,8 @@ router.get('/', function (req, res) {
 */
 
 router.get('/:id', function (req, res) {
-  Transfer.findOne({sender:req.user.id, _id: req.params.id}, function(err, result) {
-    if (err) {
+  Transfer.findOne({_id: req.params.id}, function(err, result) {
+    if (err || !result) {
       res.status(400).json({error: err});
       return;
     };
