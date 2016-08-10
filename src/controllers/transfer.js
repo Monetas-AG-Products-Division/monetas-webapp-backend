@@ -96,8 +96,7 @@ router.delete('/:id', function (req, res) {
 
 router.get('/', function (req, res) {
   Transfer.find({$and: [
-    { $or: [{sender: req.user.id}] },
-    { $or: [{recipient: req.user.id}] }
+    { $or: [{sender: req.user.id},{recipient: req.user.id}] }
   ]}, function(err, result) {
     if (err) {
       res.status(400).json({error: err});
@@ -105,19 +104,21 @@ router.get('/', function (req, res) {
     };
 
     result.forEach(function(item, key) {
-      result[key].sender.units.forEach(function(unit) {
-        if (unit.id == result.unit) {
-          result[key].unitName = unit.name;
-        }
-      });
-      delete result[key].sender.units;
-
+      if (result[key].sender.units) {
+        result[key].sender.units.forEach(function(unit) {
+          if (unit.id == result[key].unit) {
+            result[key].unitName = unit.name;
+          }
+        });
+      };
     });
 
-
-
+    result.forEach(function(item, key) {
+      delete result[key].sender.units;        
+    });
+    
     res.json({result: result});
-  }).lean().populate('recipient', 'info.name wallet.nym_id').populate({path: 'sender', select: 'info.name wallet.nym_id units'});
+  }).lean().populate('recipient', 'info.name wallet.nym_id units').populate({path: 'sender', select: 'info.name wallet.nym_id units'});
 })
 
 /**
