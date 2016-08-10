@@ -95,11 +95,26 @@ router.delete('/:id', function (req, res) {
 */
 
 router.get('/', function (req, res) {
-  Transfer.find({sender:req.user.id}, function(err, result) {
+  Transfer.find({$and: [
+    { $or: [{sender: req.user.id}] },
+    { $or: [{recipient: req.user.id}] }
+  ]}, function(err, result) {
     if (err) {
       res.status(400).json({error: err});
       return;
     };
+
+    result.forEach(function(item, key) {
+      result[key].sender.units.forEach(function(unit) {
+        if (unit.id == result.unit) {
+          result[key].unitName = unit.name;
+        }
+      });
+      delete result[key].sender.units;
+
+    });
+
+
 
     res.json({result: result});
   }).lean().populate('recipient', 'info.name wallet.nym_id').populate({path: 'sender', select: 'info.name wallet.nym_id units'});
