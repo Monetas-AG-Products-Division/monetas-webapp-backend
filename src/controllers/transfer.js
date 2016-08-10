@@ -104,6 +104,14 @@ router.get('/', function (req, res) {
     };
 
     result.forEach(function(item, key) {
+      if (item.sender._id == req.user.id) {
+        result[key].type = 'income';
+      };
+
+      if (item.recipient._id == req.user.id) {
+        result[key].type = 'outcome';
+      };
+
       if (result[key].sender.units) {
         result[key].sender.units.forEach(function(unit) {
           if (unit.id == result[key].unit) {
@@ -116,7 +124,7 @@ router.get('/', function (req, res) {
     result.forEach(function(item, key) {
       delete result[key].sender.units;        
     });
-    
+
     res.json({result: result});
   }).lean().populate('recipient', 'info.name wallet.nym_id units').populate({path: 'sender', select: 'info.name wallet.nym_id units'});
 })
