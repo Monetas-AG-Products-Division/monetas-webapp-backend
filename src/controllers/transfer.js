@@ -185,13 +185,26 @@ router.get('/:id', function (req, res) {
       res.status(400).json({error: err});
       return;
     };
-    result.sender.units.forEach(function(unit) {
+
+    var units = [];
+
+    if (result.sender) {
+      units = result.sender.units;
+    };
+
+    if (result.recipient) {
+      units = result.recipient.units;
+    };
+
+    units.forEach(function(unit) {
       if (unit.id == result.unit) {
         result.unitName = unit.name;
       }
     });
-    delete result.sender.units;
+
+    if (result.sender) delete result.sender.units;        
+    if (result.recipient) delete result.recipient.units;        
 
     res.json({result: result});
-  }).lean().populate('recipient', 'info.name wallet.nym_id').populate({path: 'sender', select: 'info.name wallet.nym_id units'});
+  }).lean().populate('recipient', 'info.name wallet.nym_id units').populate({path: 'sender', select: 'info.name wallet.nym_id units'});
 })
