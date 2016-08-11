@@ -145,11 +145,11 @@ router.get('/', function (req, res) {
 
     result.forEach(function(item, key) {
       if (item.sender._id == req.user.id) {
-        result[key].type = 'income';
+        result[key].type = 'outcome';
       };
 
       if (item.recipient && item.recipient._id == req.user.id) {
-        result[key].type = 'outcome';
+        result[key].type = 'income';
       };
 
       if (result[key].sender.units) {
