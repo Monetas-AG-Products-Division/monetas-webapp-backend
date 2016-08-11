@@ -144,25 +144,27 @@ router.get('/', function (req, res) {
     };
 
     result.forEach(function(item, key) {
-      if (item.sender._id == req.user.id) {
+      var units = [];
+      if (item.sender && item.sender._id == req.user.id) {
         result[key].type = 'outcome';
+        units = result[key].sender.units;
       };
 
       if (item.recipient && item.recipient._id == req.user.id) {
         result[key].type = 'income';
+        units = result[key].recipient.units;
       };
 
-      if (result[key].sender.units) {
-        result[key].sender.units.forEach(function(unit) {
-          if (unit.id == result[key].unit) {
-            result[key].unitName = unit.name;
-          }
-        });
-      };
+      units.forEach(function(unit) {
+        if (unit.id == result[key].unit) {
+          result[key].unitName = unit.name;
+        }
+      });
     });
 
     result.forEach(function(item, key) {
-      delete result[key].sender.units;        
+      if (result[key].sender) delete result[key].sender.units;        
+      if (result[key].recipient) delete result[key].recipient.units;        
     });
 
     res.json({result: result});
