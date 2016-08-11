@@ -127,6 +127,31 @@ router.delete('/:id', function (req, res) {
 })
 
 /**
+  @api {delete} /transfers 
+  @apiName PutTransfer
+  @apiGroup Transfer *
+  @apiParam {Object}
+  @apiSuccess {String} deleted record.
+*/
+
+router.put('/complete/:id', function (req, res) {
+  
+  Transfer.findOne({_id: req.params.id, status: 'pending'}, function (err, doc) {
+    if (err || !doc) {
+      res.status(400).json({error: err});
+      return;
+    }
+
+    doc.status = 'completed';
+    doc.sender = req.user.id;
+    doc.save(function() {
+      res.json({result: doc});
+    });
+  });
+
+})
+
+/**
   @api {get} /transfers 
   @apiName GetTransfers
   @apiGroup Transfer *
