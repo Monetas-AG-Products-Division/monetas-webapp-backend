@@ -15,19 +15,59 @@ module.exports = function route(app) {
   @apiSuccess {String} result.
 */
 
-router.post('/', function (req, res) {
+router.post('/income', function (req, res) {
   var newTransfer = {
     amount: req.body.amount, 
     fee: req.body.fee,
     message: req.body.message || '',
-    //recipient: req.body.recipient,
-    sender: req.user.id,
+    recipient: req.user.id,
     unit: req.body.unit,
     status: 'pending'
   };
 
-  console.log(newTransfer);
-  console.log(req.user);
+  var stransfer = {};
+  stransfer[req.user.wallet.nym_id] = req.body.recipient;
+
+  /*
+  var GoatD = new (require('utils/goatd'))(req.user.wallet);
+  GoatD.call({action: 'balance', method: 'POST', body: stransfer}, function (err, response, body) {
+
+    // successful transaction 
+    if (response.statusCode === 302) {
+      
+    }
+    if (body) body = JSON.parse(body);
+
+    if (!body) {
+      res.status(400).json({error: err});
+      return;
+    };
+
+
+    var answer = JSON.parse(body);
+  });
+  */
+  
+  Transfer.create(newTransfer, function(err, result) {
+    if (err) {
+      res.status(400).json({error: err});
+      return;
+    };
+
+    res.json(result);
+  });
+})
+
+router.post('/outcome', function (req, res) {
+  var newTransfer = {
+    amount: req.body.amount, 
+    fee: req.body.fee,
+    message: req.body.message || '',
+    recipient: req.body.recipient,
+    sender: req.user.id,
+    unit: req.body.unit,
+    status: 'complete'
+  };
 
   var stransfer = {};
   stransfer[req.user.wallet.nym_id] = req.body.recipient;
