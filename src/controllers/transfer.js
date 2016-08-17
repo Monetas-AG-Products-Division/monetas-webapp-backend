@@ -67,10 +67,9 @@ router.post('/outcome', function (req, res) {
 
       var status = 'completed';
       var error = null;
-
+      console.log(body);
       if (response.statusCode !== 302) {
         status = 'uncompleted';
-        body = JSON.parse(body);
         error = body.code;
       };
 
