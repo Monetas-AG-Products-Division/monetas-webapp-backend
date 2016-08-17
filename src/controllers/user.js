@@ -74,7 +74,7 @@ router.get('/balance', function (req, res) {
 
     var balance = {};
 
-    User.findOne({_id: req.user._id}, function (err, profile) {
+    User.findOne({_id: req.user.id}, function (err, profile) {
       if (err || !profile) {
         res.status(400).json({error: err});
         return;
