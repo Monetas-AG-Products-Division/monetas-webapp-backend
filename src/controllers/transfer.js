@@ -54,11 +54,11 @@ router.post('/outcome', function (req, res) {
     };
 
     var stransfer = {};
-    stransfer[recipientProfile.wallet.nym_id+''] = {};
-    stransfer[recipientProfile.wallet.nym_id+''][newTransfer.unit] = newTransfer.amount;
+    stransfer[recipientProfile.wallet.nym_id] = {};
+    stransfer[recipientProfile.wallet.nym_id][newTransfer.unit] = newTransfer.amount;
 
     var GoatD = new (require('utils/goatd'))(req.user.wallet);
-    GoatD.call({action: 'transfers', method: 'POST', body: stransfer}, function (err, response, body) {
+    GoatD.call({action: 'transfers', method: 'POST', body: JSON.stringify(stransfer)}, function (err, response, body) {
 
       if (response.statusCode !== 302 && !body) {
         res.status(400).json({error: err, response: response});
@@ -67,7 +67,7 @@ router.post('/outcome', function (req, res) {
 
       var status = 'completed';
       var error = null;
-      console.log(body, stransfer);
+      console.log(body, JSON.stringify(stransfer));
       if (response.statusCode !== 302) {
         status = 'uncompleted';
         error = body.code;
