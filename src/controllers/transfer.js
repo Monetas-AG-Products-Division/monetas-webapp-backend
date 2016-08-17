@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Transfer = mongoose.model('Transfer');
+var User = mongoose.model('User');
 
 module.exports = function route(app) {
   app.use('/api/transfers', router);
@@ -24,29 +25,6 @@ router.post('/income', function (req, res) {
     unit: req.body.unit,
     status: 'pending'
   };
-
-  var stransfer = {};
-  stransfer[req.user.wallet.nym_id] = req.body.recipient;
-
-  /*
-  var GoatD = new (require('utils/goatd'))(req.user.wallet);
-  GoatD.call({action: 'balance', method: 'POST', body: stransfer}, function (err, response, body) {
-
-    // successful transaction 
-    if (response.statusCode === 302) {
-      
-    }
-    if (body) body = JSON.parse(body);
-
-    if (!body) {
-      res.status(400).json({error: err});
-      return;
-    };
-
-
-    var answer = JSON.parse(body);
-  });
-  */
   
   Transfer.create(newTransfer, function(err, result) {
     if (err) {
@@ -65,41 +43,54 @@ router.post('/outcome', function (req, res) {
     message: req.body.message || '',
     recipient: req.body.recipient,
     sender: req.user.id,
-    unit: req.body.unit,
-    status: 'complete'
+    unit: req.body.unit
   };
 
-  var stransfer = {};
-  stransfer[req.user.wallet.nym_id] = req.body.recipient;
+
+  User.findOne({_id: req.body.recipient}, function (err, recipientProfile) {
+    if (err || !recipientProfile) {
+      res.status(400).json({error: err});
+      return;
+    };
+
+    var stransfer = {};
+    stransfer[recipient.wallet.nym_id] = {};
+    stransfer[recipient.wallet.nym_id][newTransfer.unit] = amount;
+
+    var GoatD = new (require('utils/goatd'))(req.user.wallet);
+    GoatD.call({action: 'transfers', method: 'POST', body: stransfer}, function (err, response, body) {
+
+      if (response.statusCode !== 302 && !body) {
+        res.status(400).json({error: err, response: response});
+        return;
+      };
+
+      var status = 'completed';
+      var error = null;
+
+      if (response.statusCode !== 302) {
+        status = 'uncompleted';
+        body = JSON.parse(body);
+        error = body.code;
+      };
+
+      newTransfer.status = status;
+
+      Transfer.create(newTransfer, function(err, newRecord) {
+        if (err) {
+          res.status(400).json({error: err});
+          return;
+        };
+        res.json({result: newRecord, error: error});
+      });
+      
+    });
+
+  });
 
   /*
-  var GoatD = new (require('utils/goatd'))(req.user.wallet);
-  GoatD.call({action: 'balance', method: 'POST', body: stransfer}, function (err, response, body) {
-
-    // successful transaction 
-    if (response.statusCode === 302) {
-      
-    }
-    if (body) body = JSON.parse(body);
-
-    if (!body) {
-      res.status(400).json({error: err});
-      return;
-    };
-
-
-    var answer = JSON.parse(body);
-  });
   */
   
-  Transfer.create(newTransfer, function(err, result) {
-    if (err) {
-      res.status(400).json({error: err});
-      return;
-    };
-
-    res.json(result);
-  });
 })
 
 /**
