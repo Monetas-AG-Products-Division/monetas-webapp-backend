@@ -67,7 +67,7 @@ router.post('/outcome', function (req, res) {
 
       var status = 'completed';
       var error = null;
-      console.log(body);
+      console.log(body, stransfer);
       if (response.statusCode !== 302) {
         status = 'uncompleted';
         error = body.code;
