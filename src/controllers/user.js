@@ -83,7 +83,7 @@ router.get('/balance', function (req, res) {
       for (var key in body) {
         var idx = profile.units.map(function(e) { return e.id; }).indexOf(key);
         if (idx != -1) {
-          balance[req.user.units[idx].name] = body[key];
+          balance[profile.units[idx].name] = body[key];
         };
       };
       res.json({result: balance});      
