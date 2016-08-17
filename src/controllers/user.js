@@ -85,7 +85,7 @@ router.get('/balance', function (req, res) {
         if (idx != -1) {
           balance[key] = {
             amount: body[key], 
-            code: profile[idx].code,
+            code: profile.units[idx].code,
             name: profile.units[idx].name
           };
         };
