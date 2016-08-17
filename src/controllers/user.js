@@ -74,13 +74,20 @@ router.get('/balance', function (req, res) {
 
     var balance = {};
 
-    for (var key in body) {
-      var idx = req.user.units.map(function(e) { return e.id; }).indexOf(key);
-      if (idx != -1) {
-        balance[req.user.units[idx].name] = body[key];
+    User.findOne({_id: req.user._id}, function (err, profile) {
+      if (err || !profile) {
+        res.status(400).json({error: err});
+        return;
       };
-    };
 
-    res.json({result: balance});
+      for (var key in body) {
+        var idx = profile.units.map(function(e) { return e.id; }).indexOf(key);
+        if (idx != -1) {
+          balance[req.user.units[idx].name] = body[key];
+        };
+      };
+      res.json({result: balance});      
+    });
+
   });  
 })
