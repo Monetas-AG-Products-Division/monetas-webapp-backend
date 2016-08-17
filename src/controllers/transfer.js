@@ -55,7 +55,7 @@ router.post('/outcome', function (req, res) {
 
     var stransfer = {};
     stransfer[recipientProfile.wallet.nym_id] = {};
-    stransfer[recipientProfile.wallet.nym_id][newTransfer.unit] = newTransfer.amount;
+    stransfer[recipientProfile.wallet.nym_id][newTransfer.unit] = parseFloat(newTransfer.amount);
 
     var GoatD = new (require('utils/goatd'))(req.user.wallet);
     GoatD.call({action: 'transfers', method: 'POST', body: JSON.stringify(stransfer)}, function (err, response, body) {
