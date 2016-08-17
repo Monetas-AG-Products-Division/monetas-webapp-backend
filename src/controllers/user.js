@@ -70,8 +70,17 @@ router.get('/balance', function (req, res) {
       return;
     };
 
-    var answer = JSON.parse(body);
+    var body = JSON.parse(body);
 
-    res.json({result: answer});
+    var balance = {};
+
+    for (var key in body) {
+      var idx = req.user.units.map(function(e) { return e.id; }).indexOf(key);
+      if (idx != -1) {
+        balance[req.user.units[idx].name] = body[key];
+      };
+    };
+
+    res.json({result: balance});
   });  
 })
