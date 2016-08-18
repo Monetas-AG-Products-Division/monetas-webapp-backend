@@ -59,6 +59,7 @@ router.post('/outcome', function (req, res) {
 
     var GoatD = new (require('utils/goatd'))(req.user.wallet);
     GoatD.call({action: 'transfers', method: 'POST', body: stransfer}, function (err, response, body) {
+      console.log(JSON.stringify(response.headers));
 
       if (response.statusCode !== 302 && !body) {
         res.status(400).json({error: err, response: response});
@@ -67,7 +68,6 @@ router.post('/outcome', function (req, res) {
 
       var status = 'completed';
       var error = null;
-      console.log(body, JSON.stringify(stransfer));
       if (response.statusCode !== 302) {
         status = 'uncompleted';
         error = body.code;
@@ -132,12 +132,39 @@ router.put('/complete/:id', function (req, res) {
       return;
     }
 
-    doc.status = 'completed';
-    doc.sender = req.user.id;
-    doc.save(function() {
-      res.json({result: doc});
+    var stransfer = {};
+    stransfer[doc.recipient.wallet.nym_id] = {};
+    stransfer[doc.recipient.wallet.nym_id][doc.unit] = parseFloat(doc.amount);
+
+    var GoatD = new (require('utils/goatd'))(req.user.wallet);
+    GoatD.call({action: 'transfers', method: 'POST', body: stransfer}, function (err, response, body) {
+
+      if (response.statusCode !== 302 && !body) {
+        res.status(400).json({error: err, response: response});
+        return;
+      };
+
+      var status = 'completed';
+      var error = null;
+      if (response.statusCode !== 302) {
+        status = 'uncompleted';
+        error = body.code;
+      };
+
+      newTransfer.status = status;
+
+      Transfer.update({_id:doc._id}, {sender: req.user.id, status: status, historyId: 1}, function(err, updatedRecord) {
+        if (err) {
+          res.status(400).json({error: err});
+          return;
+        };
+
+        res.json({result: updatedRecord, error: error});
+      });
+
     });
-  });
+
+  }).populate('recipient');
 
 })
 
@@ -150,7 +177,7 @@ router.put('/complete/:id', function (req, res) {
 */
 
 router.get('/', function (req, res) {
-  Transfer.find({$and: [
+  Transfer.find({status: {$ne: 'deleted'}, $and: [
     { $or: [{sender: req.user.id},{recipient: req.user.id}] }
   ]}, function(err, result) {
     if (err) {
@@ -195,7 +222,7 @@ router.get('/', function (req, res) {
 */
 
 router.get('/:id', function (req, res) {
-  Transfer.findOne({_id: req.params.id}, function(err, result) {
+  Transfer.findOne({_id: req.params.id, status: {$ne: 'deleted'}}, function(err, result) {
     if (err || !result) {
       res.status(400).json({error: err});
       return;

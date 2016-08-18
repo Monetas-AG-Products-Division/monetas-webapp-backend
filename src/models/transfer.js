@@ -10,6 +10,7 @@ var Transfer = new Schema({
   sender: { type: Schema.Types.ObjectId, ref: 'User'},
   unit: {type: String, required: true },
   status: String,
+  historyId: String,
   createdAt: { type: Date },
   updatedAt: { type: Date }
 });
