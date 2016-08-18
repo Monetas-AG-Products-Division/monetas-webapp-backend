@@ -59,7 +59,7 @@ router.post('/outcome', function (req, res) {
 
     var GoatD = new (require('utils/goatd'))(req.user.wallet);
     GoatD.call({action: 'transfers', method: 'POST', body: stransfer}, function (err, response, body) {
-      console.log(JSON.stringify(response.headers));
+      console.log(JSON.stringify(response));
 
       if (response.statusCode !== 302 && !body) {
         res.status(400).json({error: err, response: response});
