@@ -252,7 +252,7 @@ router.get('/:id', function (req, res) {
 
 router.get('/fees', function (req, res) {
   var newTransfer = {
-    amount: req.body.amount
+    amount: req.body.amount,
     unit: req.body.unit
   };
   
