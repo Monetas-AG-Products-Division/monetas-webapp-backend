@@ -59,7 +59,6 @@ router.post('/outcome', function (req, res) {
 
     var GoatD = new (require('utils/goatd'))(req.user.wallet);
     GoatD.call({action: 'transfers', method: 'POST', body: stransfer}, function (err, response, body) {
-      console.log(JSON.stringify(response));
 
       if (response.statusCode !== 302 && !body) {
         res.status(400).json({error: err, response: response});
@@ -249,4 +248,19 @@ router.get('/:id', function (req, res) {
 
     res.json({result: result});
   }).lean().populate('recipient', 'info.name wallet.nym_id units').populate({path: 'sender', select: 'info.name wallet.nym_id units'});
+})
+
+router.get('/fees', function (req, res) {
+  var newTransfer = {
+    amount: req.body.amount
+    unit: req.body.unit
+  };
+  
+  GoatD.call({action: 'fees', method: 'GET', query: 'amount='+newTransfer.amount+'&unitID='+newTransfer.unit}, function (err, response, body) {
+    if (response.statusCode !== 302 && !body) {
+      res.status(400).json({error: err, response: response});
+      return;
+    };
+    res.json({result: body});
+  });
 })

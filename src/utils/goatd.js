@@ -15,8 +15,15 @@ module.exports = class GoatD {
   }
 
   call(params, cb) {
+    
+    if (params.query) {
+      params.query = '?' + params.query
+    } else {
+      params.query = '';
+    }
+
     var options = {
-      url: this.uri + params.action,
+      url: this.uri + params.action + params.query,
       method: params.method || 'GET'
     };
 
