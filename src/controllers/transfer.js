@@ -250,7 +250,7 @@ router.get('/:id', function (req, res) {
   }).lean().populate('recipient', 'info.name wallet.nym_id units').populate({path: 'sender', select: 'info.name wallet.nym_id units'});
 })
 
-router.get('/fees', function (req, res) {
+router.post('/fees', function (req, res) {
   var newTransfer = {
     amount: req.body.amount,
     unit: req.body.unit
