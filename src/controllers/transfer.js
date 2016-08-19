@@ -69,6 +69,7 @@ router.post('/outcome', function (req, res) {
       var error = null;
       if (response.statusCode !== 302) {
         status = 'uncompleted';
+        body = JSON.parse(body);
         error = body.code;
       };
 
@@ -147,6 +148,7 @@ router.put('/complete/:id', function (req, res) {
       var error = null;
       if (response.statusCode !== 302) {
         status = 'uncompleted';
+        body = JSON.parse(body);
         error = body.code;
       };
 
@@ -262,6 +264,7 @@ router.post('/fees', function (req, res) {
       res.status(400).json({error: err, response: response});
       return;
     };
+    body = JSON.parse(body);
     res.json({result: body});
   });
 })
