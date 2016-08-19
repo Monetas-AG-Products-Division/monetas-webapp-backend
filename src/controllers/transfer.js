@@ -256,6 +256,7 @@ router.post('/fees', function (req, res) {
     unit: req.body.unit
   };
   
+  var GoatD = new (require('utils/goatd'))(req.user.wallet);
   GoatD.call({action: 'fees', method: 'GET', query: 'amount='+newTransfer.amount+'&unitID='+newTransfer.unit}, function (err, response, body) {
     if (response.statusCode !== 302 && !body) {
       res.status(400).json({error: err, response: response});
