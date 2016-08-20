@@ -123,7 +123,6 @@ router.post('/login', function (req, res) {
         };
 
         request(options, function (err, response, body) {
-          body = JSON.parse(body);
           console.log(body);
           if (err || !body) {
             callback(err);
