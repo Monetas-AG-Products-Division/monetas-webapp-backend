@@ -115,17 +115,17 @@ router.post('/login', function (req, res) {
         };
 
         if (from == 'facebook') {
-          options.url = config.facebook.profileUrl;
-          options.json = { params: { access_token: req.body.access_token, fields: 'id,name,email', format: 'json' }};
+          options.url = config.facebook.profileUrl + '?access_token=' + req.body.access_token + '&fields=id,name,email&format=json'
         } else if (from == 'google') {
-          options.url = config.google.profileUrl;
-          options.json = { params: { access_token: req.body.access_token } };
+          options.url = config.google.profileUrl + '?access_token' + req.body.access_token;
         };
+
+        console.log(options);
 
         request(options, function (err, response, body) {
           console.log(body);
-          if (err || !body) {
-            callback(err);
+          if (err || !body || !body.error) {
+            callback(err || body.error);
             return;
           };
 
