@@ -3,6 +3,8 @@ var config = require('config/config');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
+var async = require('async');
+var request = require('request');
 var User = mongoose.model('User');
 var path = require('path');
 var childProcess = require('child_process');
@@ -24,6 +26,7 @@ router.post('/signup', function (req, res) {
   var newUser ={
     username: req.body.username,
     password: req.body.password,
+    from: req.body.from || 'local',
     info: req.body.info
   };
 
@@ -88,35 +91,99 @@ router.post('/signup', function (req, res) {
 */
 
 router.post('/login', function (req, res) {
-  User.getAuthenticated(req.body.username, req.body.password, function(err, user, reason) {
-    if (err) {
-      res.status(400).json({error: err});
-      return;
-    };
+  async.waterfall([
+      function(callback) {
+        User.findOne({username: req.body.username}, function(err, user) {
+          if (err || !user) {
+            return callback('User is not found');
+          };
 
-    if (!user) {
-      var reasons = User.failedLogin;
-      var errorDescription = '';
-      switch (reason) {
-        case reasons.NOT_FOUND:
-        case reasons.PASSWORD_INCORRECT:
-          // note: these cases are usually treated the same - don't tell
-          // the user *why* the login failed, only that it did
-          errorDescription = 'User were not found';
-          break;
-        case reasons.MAX_ATTEMPTS:
-          // send email or otherwise notify user that account is
-          // temporarily locked
-          errorDescription = 'Account is temporarily locked';
-          break;
+          callback(null, user.from);
+        });
+      },
+      function(from, callback) {
+        if (!from || from == '' || from == 'local') {
+          return callback();
+        };
+
+        if (!req.body.access_token) {
+          callback('Access token is not defined');
+        };
+
+        var options = {
+          method: 'GET'
+        };
+
+        if (from == 'facebook') {
+          options.url = config.facebook.profileUrl;
+          options.json = { params: { access_token: req.body.access_token, fields: 'id,name,email', format: 'json' }};
+        } else if (from == 'google') {
+          options.url = config.google.profileUrl;
+          options.json = { params: { access_token: req.body.access_token } };
+        };
+
+        request(options, function (err, response, body) {
+          body = JSON.parse(body);
+          console.log(body);
+          if (err || !body) {
+            callback(err);
+            return;
+          };
+
+          var username = undefined;
+          var password = undefined;
+          if (from == 'google') {
+            username = body.emails[0].value;
+            password = body.id;
+          } else if (from == 'facebook') {
+            username = body.data.email;
+            password = body.data.id;
+          };
+
+          if (req.body.username != username || req.body.password != password) {
+            return callback('User is not authorized by service');
+          };
+
+          callback();
+        })
+      },
+      function(callback) {
+        User.getAuthenticated(req.body.username, req.body.password, function(err, user, reason) {
+          if (err) {
+            res.status(400).json({error: err});
+            return;
+          };
+
+          if (!user) {
+            var reasons = User.failedLogin;
+            var errorDescription = '';
+            switch (reason) {
+              case reasons.NOT_FOUND:
+              case reasons.PASSWORD_INCORRECT:
+                // note: these cases are usually treated the same - don't tell
+                // the user *why* the login failed, only that it did
+                errorDescription = 'User were not found';
+                break;
+              case reasons.MAX_ATTEMPTS:
+                // send email or otherwise notify user that account is
+                // temporarily locked
+                errorDescription = 'Account is temporarily locked';
+                break;
+            };
+            return callback(errorDescription);
+          };
+          callback(null, user);
+        });
+      }
+  ], function (error, user) {
+      if (error) {
+        res.status(401).json({error: error});
+        return;
       };
-      res.status(401).json({error: errorDescription});
-      return;
-    };
 
-    // The profile is sending inside the token
-    var token = jwt.sign({username: req.body.username, id: user._id, wallet: user.wallet}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
-    res.json({ token: token, profile: {info: user.info, nym_id: user.wallet.nym_id, units: user.units, _id: user._id} });
+      // The profile is sending inside the token
+      var token = jwt.sign({username: req.body.username, id: user._id, wallet: user.wallet}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+      res.json({ token: token, profile: {info: user.info, nym_id: user.wallet.nym_id, units: user.units, _id: user._id} });
   });
 })
 
