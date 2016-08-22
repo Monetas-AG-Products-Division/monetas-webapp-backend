@@ -79,7 +79,7 @@ router.post('/outcome', function (req, res) {
             var message = new gcm.Message();
             message.addNotification({
               title: 'Income payment',
-              body: userProfile.info.name + ' paid ' + parseFloat(newTransfer.amount) + ' ' + unitName + ' for you',
+              body: userProfile.info.name + ' transfer ' + parseFloat(newTransfer.amount) + ' ' + unitName + ' for you',
               icon: 'ic_launcher'
             });
              
@@ -194,7 +194,7 @@ router.put('/complete/:id', function (req, res) {
             var message = new gcm.Message();
             message.addNotification({
               title: 'Income payment',
-              body: userProfile.info.name + ' paid ' + parseFloat(doc.amount) + ' ' + unitName + ' for you',
+              body: userProfile.info.name + ' transfer ' + parseFloat(doc.amount) + ' ' + unitName + ' for you',
               icon: 'ic_launcher'
             });
              
