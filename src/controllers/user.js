@@ -23,7 +23,7 @@ router.put('/', function (req, res) {
     if (err || !doc) {
       res.status(400).json({error: err});
       return;
-    }
+    };
 
     // should be changed for future logic
     doc.info = req.body.info || doc.info;
@@ -94,4 +94,29 @@ router.get('/balance', function (req, res) {
     });
 
   });  
+})
+
+
+/**
+  @api {put} /api/users/device-id
+  @apiName EditDeviceId
+  @apiGroup User *
+  @apiParam {Object}
+  @apiSuccess status.
+*/
+
+router.put('/device-id', function (req, res) {
+  User.findOne({_id:req.user.id}, function (err, doc) {
+    if (err || !doc) {
+      res.status(400).json({error: err});
+      return;
+    };
+
+    // should be changed for future logic
+    doc.deviceId = req.body.id || doc.deviceId;
+    doc.save(function(err) {
+      res.json({ status: err || 'done' });
+    });
+  });
+
 })

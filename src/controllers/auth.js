@@ -27,7 +27,8 @@ router.post('/signup', function (req, res) {
     username: req.body.username,
     password: req.body.password,
     from: req.body.from || 'local',
-    info: req.body.info
+    info: req.body.info,
+    deviceId: req.body.deviceId
   };
 
   // try to create a goatD wallet
@@ -120,10 +121,7 @@ router.post('/login', function (req, res) {
           options.url = config.google.profileUrl + '?access_token' + req.body.access_token;
         };
 
-        console.log(options);
-
         request(options, function (err, response, body) {
-          console.log(body);
           if (err || !body || !body.error) {
             callback(err || body.error);
             return;
@@ -171,6 +169,11 @@ router.post('/login', function (req, res) {
             };
             return callback(errorDescription);
           };
+          callback(null, user);
+        });
+      },
+      function(user, callback) {
+        User.update({_id: user._id}, {deviceId: req.body.deviceId}, function (err, updatedUser) {
           callback(null, user);
         });
       }

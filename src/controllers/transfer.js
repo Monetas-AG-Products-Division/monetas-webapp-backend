@@ -3,6 +3,8 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var Transfer = mongoose.model('Transfer');
 var User = mongoose.model('User');
+var gcm = require('node-gcm');
+var config = require('config/config');
 
 module.exports = function route(app) {
   app.use('/api/transfers', router);
@@ -63,6 +65,25 @@ router.post('/outcome', function (req, res) {
       if (response.statusCode !== 302 && !body) {
         res.status(400).json({error: err, response: response});
         return;
+      } else {
+        // send push notification
+        if (recipientProfile.deviceId) {
+          var message = new gcm.Message();
+          message.addNotification({
+            title: 'Income payment',
+            body: req.user.info.name + ' paid ' + parseFloat(newTransfer.amount) + ' for you',
+            icon: 'ic_launcher'
+          });
+           
+          // Set up the sender with you API key, prepare your recipients' registration tokens. 
+          var sender = new gcm.Sender(config.android.key);
+          var regTokens = [recipientProfile.deviceId];
+           
+          sender.send(message, { registrationTokens: regTokens }, function (err, response) {
+            if(err) console.error(err);
+            else  console.log(response);
+          });
+        };        
       };
 
       var status = 'completed';
@@ -125,7 +146,7 @@ router.delete('/:id', function (req, res) {
 */
 
 router.put('/complete/:id', function (req, res) {
-  
+
   Transfer.findOne({_id: req.params.id, status: 'pending'}, function (err, doc) {
     if (err || !doc) {
       res.status(400).json({error: err});
@@ -150,6 +171,25 @@ router.put('/complete/:id', function (req, res) {
         status = 'uncompleted';
         body = JSON.parse(body);
         error = body.code;
+      } else {
+        // send push notification
+        if (doc.recipient.deviceId) {
+          var message = new gcm.Message();
+          message.addNotification({
+            title: 'Income payment',
+            body: req.user.info.name + ' paid ' + parseFloat(doc.amount) + ' for you',
+            icon: 'ic_launcher'
+          });
+           
+          // Set up the sender with you API key, prepare your recipients' registration tokens. 
+          var sender = new gcm.Sender(config.android.key);
+          var regTokens = [doc.recipient.deviceId];
+           
+          sender.send(message, { registrationTokens: regTokens }, function (err, response) {
+            if(err) console.error(err);
+            else  console.log(response);
+          });
+        };
       };
 
       newTransfer.status = status;

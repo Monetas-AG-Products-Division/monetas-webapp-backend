@@ -10,6 +10,7 @@ var UserSchema = new Schema({
   username: { type: String, required: true, index: { unique: true } },
   password: { type: String, required: true },
   from: String,
+  deviceId: String,
   loginAttempts: { type: Number, required: true, default: 0 },
   lockUntil: { type: Number },
   wallet: Schema.Types.Mixed,
