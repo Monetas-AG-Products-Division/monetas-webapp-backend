@@ -71,7 +71,7 @@ router.post('/outcome', function (req, res) {
           User.findOne({_id: req.user.id}, function (err, userProfile) {
             var unitName = '';
             userProfile.units.forEach(function(unit) {
-              if (unit.id == doc.unit) {
+              if (unit.id == newTransfer.unit) {
                 unitName = unit.name;
               }
             });
