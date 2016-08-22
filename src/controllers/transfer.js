@@ -69,10 +69,17 @@ router.post('/outcome', function (req, res) {
         // send push notification
         if (recipientProfile.deviceId) {
           User.findOne({_id: req.user.id}, function (err, userProfile) {
+            var unitName = '';
+            userProfile.units.forEach(function(unit) {
+              if (unit.id == doc.unit) {
+                unitName = unit.name;
+              }
+            });
+
             var message = new gcm.Message();
             message.addNotification({
               title: 'Income payment',
-              body: userProfile.info.name + ' paid ' + parseFloat(newTransfer.amount) + ' for you',
+              body: userProfile.info.name + ' paid ' + parseFloat(newTransfer.amount) + unitName + ' for you',
               icon: 'ic_launcher'
             });
              
@@ -177,10 +184,17 @@ router.put('/complete/:id', function (req, res) {
         // send push notification
         if (doc.recipient.deviceId) {
           User.findOne({_id: req.user.id}, function (err, userProfile) {
+            var unitName = '';
+            userProfile.units.forEach(function(unit) {
+              if (unit.id == doc.unit) {
+                unitName = unit.name;
+              }
+            });
+
             var message = new gcm.Message();
             message.addNotification({
               title: 'Income payment',
-              body: userProfile.info.name + ' paid ' + parseFloat(doc.amount) + ' for you',
+              body: userProfile.info.name + ' paid ' + parseFloat(doc.amount) + unitName + ' for you',
               icon: 'ic_launcher'
             });
              
