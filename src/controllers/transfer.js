@@ -68,20 +68,22 @@ router.post('/outcome', function (req, res) {
       } else {
         // send push notification
         if (recipientProfile.deviceId) {
-          var message = new gcm.Message();
-          message.addNotification({
-            title: 'Income payment',
-            body: req.user.info.name + ' paid ' + parseFloat(newTransfer.amount) + ' for you',
-            icon: 'ic_launcher'
-          });
-           
-          // Set up the sender with you API key, prepare your recipients' registration tokens. 
-          var sender = new gcm.Sender(config.android.key);
-          var regTokens = [recipientProfile.deviceId];
-           
-          sender.send(message, { registrationTokens: regTokens }, function (err, response) {
-            if(err) console.error(err);
-            else  console.log(response);
+          User.findOne({_id: req.user.id}, function (err, userProfile) {
+            var message = new gcm.Message();
+            message.addNotification({
+              title: 'Income payment',
+              body: userProfile.info.name + ' paid ' + parseFloat(newTransfer.amount) + ' for you',
+              icon: 'ic_launcher'
+            });
+             
+            // Set up the sender with you API key, prepare your recipients' registration tokens. 
+            var sender = new gcm.Sender(config.android.key);
+            var regTokens = [recipientProfile.deviceId];
+             
+            sender.send(message, { registrationTokens: regTokens }, function (err, response) {
+              if(err) console.error(err);
+              else  console.log(response);
+            });            
           });
         };        
       };
@@ -174,20 +176,22 @@ router.put('/complete/:id', function (req, res) {
       } else {
         // send push notification
         if (doc.recipient.deviceId) {
-          var message = new gcm.Message();
-          message.addNotification({
-            title: 'Income payment',
-            body: req.user.info.name + ' paid ' + parseFloat(doc.amount) + ' for you',
-            icon: 'ic_launcher'
-          });
-           
-          // Set up the sender with you API key, prepare your recipients' registration tokens. 
-          var sender = new gcm.Sender(config.android.key);
-          var regTokens = [doc.recipient.deviceId];
-           
-          sender.send(message, { registrationTokens: regTokens }, function (err, response) {
-            if(err) console.error(err);
-            else  console.log(response);
+          User.findOne({_id: req.user.id}, function (err, userProfile) {
+            var message = new gcm.Message();
+            message.addNotification({
+              title: 'Income payment',
+              body: userProfile.info.name + ' paid ' + parseFloat(doc.amount) + ' for you',
+              icon: 'ic_launcher'
+            });
+             
+            // Set up the sender with you API key, prepare your recipients' registration tokens. 
+            var sender = new gcm.Sender(config.android.key);
+            var regTokens = [doc.recipient.deviceId];
+             
+            sender.send(message, { registrationTokens: regTokens }, function (err, response) {
+              if(err) console.error(err);
+              else  console.log(response);
+            });
           });
         };
       };
