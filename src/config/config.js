@@ -47,6 +47,9 @@ var config = {
     google: {
       clientId: '475026824438-eamepvbka7q0i9r5m9ef5eej3bl1kpos.apps.googleusercontent.com',
       profileUrl: 'https://www.googleapis.com/plus/v1/people/me'
+    },
+    android: {
+      key: 'AIzaSyC61i7tA_Vuya9xvHEZXvBH8lPoBuZbV78'
     }
   },
   production: {
@@ -68,6 +71,9 @@ var config = {
     google: {
       clientId: '475026824438-eamepvbka7q0i9r5m9ef5eej3bl1kpos.apps.googleusercontent.com',
       profileUrl: 'https://www.googleapis.com/plus/v1/people/me'
+    },
+    android: {
+      key: 'AIzaSyC61i7tA_Vuya9xvHEZXvBH8lPoBuZbV78'
     }
   },
 };
