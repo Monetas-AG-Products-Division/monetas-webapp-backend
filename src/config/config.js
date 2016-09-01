@@ -17,11 +17,11 @@ var config = {
       version: 'v3.0'
     },
     facebook: {
-      appId: '1060375004059155',
+      appId: '588529297993055',
       profileUrl: 'https://graph.facebook.com/v2.2/me'
     },
     google: {
-      clientId: '475026824438-eamepvbka7q0i9r5m9ef5eej3bl1kpos.apps.googleusercontent.com',
+      clientId: '247686357136-26vul8asqdoc9jtq97238cgv8kcs8m3b.apps.googleusercontent.com',
       profileUrl: 'https://www.googleapis.com/plus/v1/people/me'
     },
     android: {
@@ -41,11 +41,11 @@ var config = {
       version: 'v3.0'
     },
     facebook: {
-      appId: '1060375004059155',
+      appId: '588529297993055',
       profileUrl: 'https://graph.facebook.com/v2.2/me'
     },
     google: {
-      clientId: '475026824438-eamepvbka7q0i9r5m9ef5eej3bl1kpos.apps.googleusercontent.com',
+      clientId: '247686357136-26vul8asqdoc9jtq97238cgv8kcs8m3b.apps.googleusercontent.com',
       profileUrl: 'https://www.googleapis.com/plus/v1/people/me'
     },
     android: {
@@ -65,11 +65,11 @@ var config = {
       version: 'v3.0'
     },
     facebook: {
-      appId: '1060375004059155',
+      appId: '588529297993055',
       profileUrl: 'https://graph.facebook.com/v2.2/me'
     },
     google: {
-      clientId: '475026824438-eamepvbka7q0i9r5m9ef5eej3bl1kpos.apps.googleusercontent.com',
+      clientId: '247686357136-26vul8asqdoc9jtq97238cgv8kcs8m3b.apps.googleusercontent.com',
       profileUrl: 'https://www.googleapis.com/plus/v1/people/me'
     },
     android: {
