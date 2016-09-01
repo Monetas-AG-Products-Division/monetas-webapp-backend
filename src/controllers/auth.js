@@ -196,7 +196,6 @@ function createNewWallet(cb) {
       wallet = {
         db_schema: stdout.match(/DB schema:(.*)\n/)[1].trim(),
         service: stdout.match(/Wallet service:(.*)\n/)[1].trim(),
-        sk: stdout.match(/Wallet SK:(.*)\n/)[1].trim(),
         ident: stdout.match(/Wallet ident:(.*)\n/)[1].trim(),
         port: stdout.match(/Wallet port:(.*)\n/)[1].trim()
       };
