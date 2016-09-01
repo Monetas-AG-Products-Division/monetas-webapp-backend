@@ -14,7 +14,7 @@ var config = {
     },
     goatD: {
       server: '127.0.0.1',
-      version: 'v3.0'
+      version: 'v4.0'
     },
     facebook: {
       appId: '588529297993055',
@@ -38,7 +38,7 @@ var config = {
     },
     goatD: {
       server: '127.0.0.1',
-      version: 'v3.0'
+      version: 'v4.0'
     },
     facebook: {
       appId: '588529297993055',
@@ -62,7 +62,7 @@ var config = {
     },
     goatD: {
       server: '127.0.0.1',
-      version: 'v3.0'
+      version: 'v4.0'
     },
     facebook: {
       appId: '588529297993055',
