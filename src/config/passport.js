@@ -39,6 +39,7 @@ module.exports = function() {
 
       // try to create a goatD wallet
       User.createNewAccount(newUser, function(err, result) {
+        console.log(err, result);
         return cb(err, result);
       });
     });
