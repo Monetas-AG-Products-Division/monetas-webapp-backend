@@ -28,7 +28,7 @@ module.exports = function() {
       var newUser = {
         username: 'facebook-'+profile.id,
         password: accessToken,
-        from: 'facebook'
+        from: 'facebook',
         info: {
           name: profile.name.givenName + ' ' + profile.name.familyName
         },
