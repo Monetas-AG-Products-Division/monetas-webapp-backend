@@ -17,7 +17,7 @@ module.exports = function() {
       var User = mongoose.model('User');
 
       // create a user a new user
-      console.log(profile._json);
+      console.log(profile, profile._json);
       var newUser = {
         username: profile._json.email,
         password: profile._json.id,
