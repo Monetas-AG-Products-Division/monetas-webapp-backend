@@ -43,9 +43,9 @@ var config = {
       version: 'v4.0'
     },
     facebook: {
-      appId: '667202340098837',
-      appSecret: '77e6728542e6a3d1ffb264436e4a5635',
-      redirectUrl: 'http://localhost:3000/auth/facebook/callback',
+      appId: '657500347745694',
+      appSecret: 'c5d555d1e2fb97727825c228b9c5cad1',
+      redirectUrl: 'http://api.monetas.net/auth/facebook/callback',
       profileUrl: 'https://graph.facebook.com/v2.2/me'
     },
     google: {
