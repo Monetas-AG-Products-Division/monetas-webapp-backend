@@ -32,7 +32,7 @@ module.exports = function() {
         info: {
           name: profile.name.givenName + ' ' + profile.name.familyName
         },
-        email: profile.emails[0].value
+        email: profile.emails ? profile.emails[0].value : ''
       };
 
       console.log(newUser);
