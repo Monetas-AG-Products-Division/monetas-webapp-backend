@@ -136,6 +136,7 @@ UserSchema.statics.getAuthenticated = function(username, password, cb) {
 UserSchema.statics.createNewAccount = function(newUser, callback) {
   var _this = this;
   createNewWallet(function(err, wallet) {
+    console.log(err, walllet);
     if (err || !wallet) {
       callback({error: 'A wallet couldn\'t be created'});
       return;

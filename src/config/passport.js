@@ -30,7 +30,7 @@ module.exports = function() {
         password: accessToken,
         from: 'facebook',
         info: {
-          name: profile.name.givenName + ' ' + profile.name.familyName
+          name: profile.displayName ? profile.displayName : profile.name.givenName + ' ' + profile.name.familyName
         },
         email: profile.emails ? profile.emails[0].value : ''
       };
