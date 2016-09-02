@@ -8,10 +8,19 @@ var request = require('request');
 var User = mongoose.model('User');
 var path = require('path');
 var childProcess = require('child_process');
+var passport = require('passport');
 
 module.exports = function route(app) {
   app.use('/auth', router);
+
 };
+
+router.get('/facebook', passport.authenticate('facebook'));
+router.get('/facebook/callback',
+    passport.authenticate('facebook', {
+      successRedirect : '/profile',
+      failureRedirect : '/'
+    }));
 
 /**
   @api {post} /auth/signup login and password
@@ -32,54 +41,12 @@ router.post('/signup', function (req, res) {
   };
 
   // try to create a goatD wallet
-  createNewWallet(function(err, wallet) {
-    if (err || !wallet) {
-      res.status(400).json({error: 'A wallet couldn\'t be created'});
+  User.createNewAccount(newUser, function(err, result) {
+    if (err) {
+      res.status(400).json({error: err});
       return;
     };
-
-    newUser.wallet = wallet;
-
-    // get nym-id and save it into db record
-    var GoatD = new (require('utils/goatd'))(wallet);
-    GoatD.call({action: 'nym-id'}, function (err, response, body) {
-      if (err || response.statusCode !== 200) {
-        res.status(400).json({error: err});
-        return;
-      };
-      
-      newUser.wallet.nym_id = body.trim().replace(/\"/g,'');
-
-      // get allowed units for user's wallet
-      GoatD.call({action: 'units'}, function (err, response, body) {
-        if (err || response.statusCode !== 200) {
-          res.status(400).json({error: err});
-          return;
-        };
-
-        var units = JSON.parse(body);
-        newUser.units = [];
-        for (var id in units) {
-          newUser.units.push({
-            code: units[id].code,
-            id: id,
-            name: units[id].name
-          });
-        };
-
-        // save user to database
-        User.create(newUser, function(err, result) {
-          if (err) {
-            res.status(400).json({error: err});
-            return;
-          };
-
-          // The profile is sending inside the token
-          var token = jwt.sign({username: req.body.username, id: result._id, wallet: result.wallet}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
-          res.json({ token: token, profile: {nym_id: result.wallet.nym_id, units: result.units, _id: result._id} });
-        });
-      });
-    });
+    res.json(result);
   });
 })
 
@@ -188,6 +155,58 @@ router.post('/login', function (req, res) {
       res.json({ token: token, profile: {info: user.info, nym_id: user.wallet.nym_id, units: user.units, _id: user._id} });
   });
 })
+
+function createNewAccount(newUser, res) {
+  createNewWallet(function(err, wallet) {
+    if (err || !wallet) {
+      res.status(400).json({error: 'A wallet couldn\'t be created'});
+      return;
+    };
+
+    newUser.wallet = wallet;
+
+    // get nym-id and save it into db record
+    var GoatD = new (require('utils/goatd'))(wallet);
+    GoatD.call({action: 'nym-id'}, function (err, response, body) {
+      if (err || response.statusCode !== 200) {
+        res.status(400).json({error: err});
+        return;
+      };
+      
+      newUser.wallet.nym_id = body.trim().replace(/\"/g,'');
+
+      // get allowed units for user's wallet
+      GoatD.call({action: 'units'}, function (err, response, body) {
+        if (err || response.statusCode !== 200) {
+          res.status(400).json({error: err});
+          return;
+        };
+
+        var units = JSON.parse(body);
+        newUser.units = [];
+        for (var id in units) {
+          newUser.units.push({
+            code: units[id].code,
+            id: id,
+            name: units[id].name
+          });
+        };
+
+        // save user to database
+        User.create(newUser, function(err, result) {
+          if (err) {
+            res.status(400).json({error: err});
+            return;
+          };
+
+          // The profile is sending inside the token
+          var token = jwt.sign({username: req.body.username, id: result._id, wallet: result.wallet}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+          res.json({ token: token, profile: {nym_id: result.wallet.nym_id, units: result.units, _id: result._id} });
+        });
+      });
+    });
+  });
+};
 
 function createNewWallet(cb) {
   childProcess.execFile('newwallet', [''], function(err, stdout, stderr) {

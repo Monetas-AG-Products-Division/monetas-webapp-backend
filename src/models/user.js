@@ -1,3 +1,7 @@
+var path = require('path');
+var jwt = require('jsonwebtoken');
+var childProcess = require('child_process');
+
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
   bcrypt = require('bcryptjs'),
@@ -129,4 +133,73 @@ UserSchema.statics.getAuthenticated = function(username, password, cb) {
   });
 };
 
+UserSchema.statics.createNewAccount = function(newUser, callback) {
+  var _this = this;
+  createNewWallet(function(err, wallet) {
+    if (err || !wallet) {
+      callback({error: 'A wallet couldn\'t be created'});
+      return;
+    };
+
+    newUser.wallet = wallet;
+
+    // get nym-id and save it into db record
+    var GoatD = new (require('utils/goatd'))(wallet);
+    GoatD.call({action: 'nym-id'}, function (err, response, body) {
+      if (err || response.statusCode !== 200) {
+        callback({error: err});
+        return;
+      };
+      
+      newUser.wallet.nym_id = body.trim().replace(/\"/g,'');
+
+      // get allowed units for user's wallet
+      GoatD.call({action: 'units'}, function (err, response, body) {
+        if (err || response.statusCode !== 200) {
+          callback({error: err});
+          return;
+        };
+
+        var units = JSON.parse(body);
+        newUser.units = [];
+        for (var id in units) {
+          newUser.units.push({
+            code: units[id].code,
+            id: id,
+            name: units[id].name
+          });
+        };
+
+        // save user to database
+        _this.create(newUser, function(err, result) {
+          if (err) {
+            callback({error: err});
+            return;
+          };
+
+          // The profile is sending inside the token
+          var token = jwt.sign({username: req.body.username, id: result._id, wallet: result.wallet}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+          callback(null, { token: token, profile: {nym_id: result.wallet.nym_id, units: result.units, _id: result._id} });
+        });
+      });
+    });
+  });
+};
+
 module.exports = mongoose.model('User', UserSchema);
+
+function createNewWallet(cb) {
+  childProcess.execFile('newwallet', [''], function(err, stdout, stderr) {
+    var wallet = null;
+    if (!err) {
+      wallet = {
+        db_schema: stdout.match(/DB schema:(.*)\n/)[1].trim(),
+        service: stdout.match(/Wallet service:(.*)\n/)[1].trim(),
+        ident: stdout.match(/Wallet ident:(.*)\n/)[1].trim(),
+        port: stdout.match(/Wallet port:(.*)\n/)[1].trim()
+      };
+    };
+    cb(err, wallet);
+  });
+};
+

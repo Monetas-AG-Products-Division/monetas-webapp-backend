@@ -17,7 +17,9 @@ var config = {
       version: 'v4.0'
     },
     facebook: {
-      appId: '588529297993055',
+      appId: '1059174770845845',
+      appSecret: '17faa1bd42e045ef8d4da26c1305fd86',
+      redirectUrl: 'http://localhost:3000/auth/facebook/callback',
       profileUrl: 'https://graph.facebook.com/v2.2/me'
     },
     google: {
@@ -41,7 +43,9 @@ var config = {
       version: 'v4.0'
     },
     facebook: {
-      appId: '588529297993055',
+      appId: '667202340098837',
+      appSecret: '77e6728542e6a3d1ffb264436e4a5635',
+      redirectUrl: 'http://localhost:3000/auth/facebook/callback',
       profileUrl: 'https://graph.facebook.com/v2.2/me'
     },
     google: {
@@ -65,7 +69,9 @@ var config = {
       version: 'v4.0'
     },
     facebook: {
-      appId: '588529297993055',
+      appId: '667202340098837',
+      appSecret: '77e6728542e6a3d1ffb264436e4a5635',
+      redirectUrl: 'http://api.monetas.net/auth/facebook/callback',
       profileUrl: 'https://graph.facebook.com/v2.2/me'
     },
     google: {
