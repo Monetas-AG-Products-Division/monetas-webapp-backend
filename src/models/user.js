@@ -147,6 +147,7 @@ UserSchema.statics.createNewAccount = function(newUser, callback) {
     // get nym-id and save it into db record
     var GoatD = new (require('utils/goatd'))(wallet);
     GoatD.call({action: 'nym-id'}, function (err, response, body) {
+      console.log(err, body);
       if (err || response.statusCode !== 200) {
         callback({error: err});
         return;
