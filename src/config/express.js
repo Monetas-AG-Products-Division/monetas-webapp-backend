@@ -3,7 +3,6 @@ var glob = require('glob');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var expressJwt = require('express-jwt');
-var jwt = require('jsonwebtoken');
 var config = require('config/config');
 
 module.exports = function(app, config) {
