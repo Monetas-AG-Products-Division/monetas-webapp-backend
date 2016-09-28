@@ -1,5 +1,4 @@
 var path = require('path');
-var jwt = require('jsonwebtoken');
 var childProcess = require('child_process');
 
 var mongoose = require('mongoose'),
@@ -136,7 +135,7 @@ UserSchema.statics.getAuthenticated = function(username, password, cb) {
 UserSchema.statics.createNewAccount = function(newUser, callback) {
   var _this = this;
   createNewWallet(function(err, wallet) {
-    console.log(err, wallet);
+    console.log('> wallet: ', err, wallet);
     if (err || !wallet) {
       callback({error: 'A wallet couldn\'t be created'});
       return;
@@ -147,7 +146,7 @@ UserSchema.statics.createNewAccount = function(newUser, callback) {
     // get nym-id and save it into db record
     var GoatD = new (require('utils/goatd'))(wallet);
     GoatD.call({action: 'nym-id'}, function (err, response, body) {
-      console.log(err, body);
+      console.log('> nym-id: ', err, body);
       if (err || response.statusCode !== 200) {
         callback({error: err});
         return;
@@ -179,9 +178,7 @@ UserSchema.statics.createNewAccount = function(newUser, callback) {
             return;
           };
 
-          // The profile is sending inside the token
-          var token = jwt.sign({username: req.body.username, id: result._id, wallet: result.wallet}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
-          callback(null, { token: token, profile: {nym_id: result.wallet.nym_id, units: result.units, _id: result._id} });
+          callback(null, result);
         });
       });
     });

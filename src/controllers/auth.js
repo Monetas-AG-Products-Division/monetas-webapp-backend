@@ -46,7 +46,9 @@ router.post('/signup', function (req, res) {
       res.status(400).json({error: err});
       return;
     };
-    res.json(result);
+    // The profile is sending inside the token
+    var token = jwt.sign({username: newUser.username, id: result._id, wallet: result.wallet}, config.secret.phrase, { expiresIn: config.secret.expiresIn });
+    res.json({ token: token, profile: {nym_id: result.wallet.nym_id, units: result.units, _id: result._id} });
   });
 })
 
